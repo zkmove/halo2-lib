@@ -42,8 +42,8 @@ where
     let s_valid = scalar_chip.is_soft_nonzero(ctx, s);
 
     // compute u1 = m s^{-1} mod n and u2 = r s^{-1} mod n
-    let u1 = scalar_chip.divide(ctx, msghash, s);
-    let u2 = scalar_chip.divide(ctx, r, s);
+    let u1 = scalar_chip.divide_unsafe(ctx, msghash, s);
+    let u2 = scalar_chip.divide_unsafe(ctx, r, s);
 
     //let r_crt = scalar_chip.to_crt(ctx, r)?;
 
