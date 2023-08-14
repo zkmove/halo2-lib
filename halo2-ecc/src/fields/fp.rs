@@ -450,6 +450,28 @@ impl<F: PrimeField, Fp: PrimeField> FieldChip<F> for FpConfig<F, Fp> {
             self.range.gate.assert_equal(ctx, Existing(*limb_a), Existing(*limb_b));
         }
     }
+
+    fn divide(
+        &self,
+        ctx: &mut Context<F>,
+        a: &Self::FieldPoint,
+        b: &Self::FieldPoint,
+    ) -> Self::FieldPoint {
+        let quotient = self.divide_unsafe(ctx, a, b);
+        let b_is_zero = self.is_zero(ctx, b);
+        self.select(ctx, &quotient, b, &b_is_zero)
+    }
+
+    fn neg_divide(
+        &self,
+        ctx: &mut Context<F>,
+        a: &Self::FieldPoint,
+        b: &Self::FieldPoint,
+    ) -> Self::FieldPoint {
+        let quotient = self.divide_unsafe(ctx, a, b);
+        let b_is_zero = self.is_zero(ctx, b);
+        self.select(ctx, &quotient, b, &b_is_zero)
+    }
 }
 
 impl<F: PrimeField, Fp: PrimeField> Selectable<F> for FpConfig<F, Fp> {
