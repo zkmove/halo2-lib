@@ -1,9 +1,6 @@
 use super::{Fp12Chip, Fp2Chip, FpChip, FpPoint};
 use crate::fields::PrimeField;
-use crate::halo2_proofs::{
-    arithmetic::Field,
-    halo2curves::bn256::{Fq, Fq2, BN_X, FROBENIUS_COEFF_FQ12_C1},
-};
+use crate::halo2_proofs::halo2curves::bn256::{Fq, Fq2, BN_X, FROBENIUS_COEFF_FQ12_C1};
 use crate::{
     ecc::get_naf,
     fields::{fp12::mul_no_carry_w6, FieldChip, FieldExtPoint},

@@ -459,7 +459,7 @@ impl<F: PrimeField, Fp: PrimeField> FieldChip<F> for FpConfig<F, Fp> {
     ) -> Self::FieldPoint {
         let quotient = self.divide_unsafe(ctx, a, b);
         let b_is_zero = self.is_zero(ctx, b);
-        self.select(ctx, &quotient, b, &b_is_zero)
+        self.select(ctx, b, &quotient, &b_is_zero)
     }
 
     fn neg_divide(
@@ -470,7 +470,7 @@ impl<F: PrimeField, Fp: PrimeField> FieldChip<F> for FpConfig<F, Fp> {
     ) -> Self::FieldPoint {
         let quotient = self.divide_unsafe(ctx, a, b);
         let b_is_zero = self.is_zero(ctx, b);
-        self.select(ctx, &quotient, b, &b_is_zero)
+        self.select(ctx, b, &quotient, &b_is_zero)
     }
 }
 
