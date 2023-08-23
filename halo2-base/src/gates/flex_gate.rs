@@ -709,6 +709,25 @@ pub trait GateInstructions<F: ScalarField> {
         self.mul(ctx, a, b)
     }
 
+    fn and_many(
+        &self,
+        ctx: &mut Context<F>,
+        values: impl IntoIterator<Item = QuantumCell<F>>,
+    ) -> AssignedValue<F> {
+        let values = values.into_iter();
+        let (len, hi) = values.size_hint();
+        debug_assert!(len > 2, "at least 2 elements to perform AND operation");
+        debug_assert_eq!(Some(len), hi);
+
+        let mut a = Value::known(F::one());
+        let cells = values.flat_map(|b| {
+            let prev_res = a.clone();
+            a = a.zip(b.value()).map(|(a, b)| a * b);
+            [Constant(F::zero()), Witness(prev_res), b, Witness(a)]
+        });
+        self.assign_region_last(ctx, cells, (0..len).map(|i| (4 * i as isize, None)))
+    }
+
     fn not(&self, ctx: &mut Context<F>, a: impl Into<QuantumCell<F>>) -> AssignedValue<F> {
         self.sub(ctx, Constant(F::one()), a)
     }
