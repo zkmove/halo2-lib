@@ -714,18 +714,16 @@ pub trait GateInstructions<F: ScalarField> {
         ctx: &mut Context<F>,
         values: impl IntoIterator<Item = QuantumCell<F>>,
     ) -> AssignedValue<F> {
-        let values = values.into_iter();
+        let mut values = values.into_iter();
         let (len, hi) = values.size_hint();
-        debug_assert!(len > 2, "at least 2 elements to perform AND operation");
+        // TODO: is is safe to assume that len >= 2 (cc @rohit)
+        assert!(len >= 2, "at least 2 elements to perform AND operation");
         debug_assert_eq!(Some(len), hi);
 
-        let mut a = Value::known(F::one());
-        let cells = values.flat_map(|b| {
-            let prev_res = a.clone();
-            a = a.zip(b.value()).map(|(a, b)| a * b);
-            [Constant(F::zero()), Witness(prev_res), b, Witness(a)]
-        });
-        self.assign_region_last(ctx, cells, (0..len).map(|i| (4 * i as isize, None)))
+        let a = values.next().unwrap();
+        let b = values.next().unwrap();
+        let and_many_acc = self.and(ctx, a, b);
+        values.fold(and_many_acc, |acc, b| self.and(ctx, Existing(acc), b))
     }
 
     fn not(&self, ctx: &mut Context<F>, a: impl Into<QuantumCell<F>>) -> AssignedValue<F> {
