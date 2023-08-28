@@ -480,7 +480,7 @@ impl<F: PrimeField, Fp: PrimeField> FieldChip<F> for FpConfig<F, Fp> {
         a: &Self::FieldPoint,
         b: &Self::FieldPoint,
     ) -> Self::FieldPoint {
-        let quotient = self.divide_unsafe(ctx, a, b);
+        let quotient = self.neg_divide_unsafe(ctx, a, b);
         let b_is_zero = self.is_zero(ctx, b);
         self.select(ctx, b, &quotient, &b_is_zero)
     }
