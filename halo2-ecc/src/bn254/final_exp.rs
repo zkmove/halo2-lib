@@ -326,12 +326,12 @@ impl<F: PrimeField> Fp12Chip<F> {
         let y1 = self.conjugate(ctx, &m);
 
         // m^x
-        let mx = self.cyclotomic_pow(ctx, m, vec![BN_X]);
+        let mx = self.pow(ctx, &m, vec![BN_X]);
         // (m^x)^p
         let mxp = self.frobenius_map(ctx, &mx, 1);
         // m^{x^2}
 
-        let mx2 = self.cyclotomic_pow(ctx, mx.clone(), vec![BN_X]);
+        let mx2 = self.pow(ctx, &mx, vec![BN_X]);
         // (m^{x^2})^p
         let mx2p = self.frobenius_map(ctx, &mx2, 1);
         // y2 = (m^{x^2})^{p^2}
@@ -340,7 +340,7 @@ impl<F: PrimeField> Fp12Chip<F> {
         // y5 = 1/mx2
         let y5 = self.conjugate(ctx, &mx2);
 
-        let mx3 = self.cyclotomic_pow(ctx, mx2, vec![BN_X]);
+        let mx3 = self.pow(ctx, &mx2, vec![BN_X]);
         // (m^{x^3})^p
         let mx3p = self.frobenius_map(ctx, &mx3, 1);
 
